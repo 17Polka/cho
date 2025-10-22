@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТОП СТУДЕНТОВ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: white;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Кнопка назад */
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(106, 90, 205, 0.9);
+            color: white;
+            border: 2px solid #6A5ACD;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(106, 90, 205, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(106, 90, 205, 0.4);
+        }
+
+        /* Профиль справа сверху */
+        .user-profile-top {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(106, 90, 205, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid #6A5ACD;
+            color: white;
+            box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ccccff;
+            object-fit: cover;
+        }
+
+        .user-info-top {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .user-rank-top {
+            font-size: 0.9rem;
+            color: #ccccff;
+        }
+
+        /* Основной контент */
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .leaderboard {
+            width: 100%;
+        }
+
+        /* Логотип по центру */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            margin-top: 4rem;
+        }
+
+        .logo {
+            max-height: 120px;
+            object-fit: contain;
+        }
+
+        .description {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .description h3 {
+            color: #6A5ACD;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .search {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 20px;
+            border: 2px solid #6A5ACD;
+            border-radius: 25px;
+            background: white;
+            color: #333;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .search:focus {
+            outline: none;
+            border-color: blueviolet;
+            box-shadow: 0 0 10px rgba(106, 90, 205, 0.5);
+        }
+
+        .search::placeholder {
+            color: #999;
+        }
+
+        /* Таблица */
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #6A5ACD, blueviolet);
+        }
+
+        thead tr {
+            border-bottom: 2px solid #ccccff;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            font-weight: 600;
+            color: white;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(106, 90, 205, 0.05);
+            transform: scale(1.01);
+        }
+
+        tbody tr td:first-child {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: flex-start;
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #6A5ACD;
+        }
+
+        /* Цвета для призовых мест */
+        #winner {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        #runner-up {
+            color: #c0c0c0;
+            text-shadow: 0 0 10px rgba(192, 192, 192, 0.3);
+        }
+
+        #second-runner-up {
+            color: #cd7f32;
+            text-shadow: 0 0 10px rgba(205, 127, 50, 0.3);
+        }
+
+        .ratio-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .hard-skills-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ff6666);
+            transition: width 0.3s ease;
+        }
+
+        .soft-skills-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4444ff, #6666ff);
+            transition: width 0.3s ease;
+        }
+
+        .ratio-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .hard-percent {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .soft-percent {
+            color: #4444ff;
+            font-weight: bold;
+        }
+
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .user-profile-top {
+                top: 1rem;
+                right: 1rem;
+                padding: 8px 16px;
+            }
+
+            .user-avatar-small {
+                width: 35px;
+                height: 35px;
+            }
+
+            .user-name {
+                font-size: 0.9rem;
+            }
+
+            .user-rank-top {
+                font-size: 0.8rem;
+            }
+
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .logo-container {
+                margin-top: 5rem;
+            }
+
+            .description h3 {
+                font-size: 2rem;
+            }
+
+            .logo {
+                max-height: 80px;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.7rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .user-profile-top {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+                padding: 10px;
+            }
+
+            .user-info-top {
+                text-align: center;
+            }
+
+            .main-content {
+                padding: 0.5rem;
+            }
+
+            .description h3 {
+                font-size: 1.5rem;
+            }
+
+            .search {
+                font-size: 0.9rem;
+                padding: 10px 16px;
+            }
+
+            th, td {
+                padding: 0.5rem 0.3rem;
+                font-size: 0.8rem;
+            }
+
+            .player-avatar {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Кнопка назад -->
+    <a href="javascript:history.back()" class="back-button">← Назад</a>
+
+    <!-- Профиль справа сверху -->
+    <div class="user-profile-top">
+        <div class="user-info-top">
+            <div class="user-name">Бадамшин Антон</div>
+            <div class="user-rank-top">#2 • 209 очков</div>
+        </div>
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Бадамшин&backgroundColor=6A5ACD" 
+             alt="Аватар" class="user-avatar-small">
+    </div>
+
+    <!-- Основной контент -->
+    <div class="main-content">
+        <div class="leaderboard">
+            <!-- Логотип по центру -->
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/ru/thumb/5/5c/Logo_Ufa_University_of_Science_and_Technology.svg/1200px-Logo_Ufa_University_of_Science_and_Technology.svg.png" 
+                     alt="Уфимский университет науки и технологий" class="logo">
+            </div>
+            
+            <div class="description">
+                <h3>ТОП СТУДЕНТОВ</h3>
+                <p>Рейтинг успеваемости 2025</p>
+                <input id="search" class="search" placeholder="Поиск студентов..." oninput="search()">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Место</th>
+                        <th>Студент</th>
+                        <th>Hard Skills</th>
+                        <th>Soft Skills</th>
+                        <th>Общие очки</th>
+                        <th>Соотношение %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="winner">1</td>
+                        <td>
+                            <div class="player-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Кужаев&backgroundColor=6A5ACD" 
+                                     alt="Кужаев" class="player-avatar">
+                                <span>Кужаев Арсен</span>
+                            </div>
+                        </td>
+                        <td>156</td>
+                        <td>83</td>
+                        <td>239</td>
+                        <td>
+                            <div class="ratio-bar">
+                                <div class="hard-skills-fill" style="width: 65.3%"></div>
+                                <div class="soft-skills-fill" style="width: 34.7%"></div>
+                            </div>
+                            <div class="ratio-text">
+                                <span class="hard-percent">65.3%</span>
+                                <span class="soft-percent">34.7%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td id="runner-up">2</td>
+                        <td>
+                            <div class="player-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Бадамшин&backgroundColor=6A5ACD" 
+                                     alt="Бадамшин" class="player-avatar">
+                                <span>Бадамшин Антон</span>
+                            </div>
+                        </td>
+                        <td>134</td>
+                        <td>75</td>
+                        <td>209</td>
+                        <td>
+                            <div class="ratio-bar">
+                                <div class="hard-skills-fill" style="width: 64.1%"></div>
+                                <div class="soft-skills-fill" style="width: 35.9%"></div>
+                            </div>
+                            <div class="ratio-text">
+                                <span class="hard-percent">64.1%</span>
+                                <span class="soft-percent">35.9%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td id="second-runner-up">3</td>
+                        <td>
+                            <div class="player-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Шеметов&backgroundColor=6A5ACD" 
+                                     alt="Шеметов" class="player-avatar">
+                                <span>Шеметов Глеб</span>
+                            </div>
+                        </td>
+                        <td>98</td>
+                        <td>56</td>
+                        <td>154</td>
+                        <td>
+                            <div class="ratio-bar">
+                                <div class="hard-skills-fill" style="width: 63.6%"></div>
+                                <div class="soft-skills-fill" style="width: 36.4%"></div>
+                            </div>
+                            <div class="ratio-text">
+                                <span class="hard-percent">63.6%</span>
+                                <span class="soft-percent">36.4%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>4</td>
+                        <td>
+                            <div class="player-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Костригина&backgroundColor=6A5ACD" 
+                                     alt="Костригина" class="player-avatar">
+                                <span>Костригина Марина</span>
+                            </div>
+                        </td>
+                        <td>65</td>
+                        <td>35</td>
+                        <td>100</td>
+                        <td>
+                            <div class="ratio-bar">
+                                <div class="hard-skills-fill" style="width: 65%"></div>
+                                <div class="soft-skills-fill" style="width: 35%"></div>
+                            </div>
+                            <div class="ratio-text">
+                                <span class="hard-percent">65%</span>
+                                <span class="soft-percent">35%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>5</td>
+                        <td>
+                            <div class="player-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Леушина&backgroundColor=6A5ACD" 
+                                     alt="Леушина" class="player-avatar">
+                                <span>Леушина Алена</span>
+                            </div>
+                        </td>
+                        <td>52</td>
+                        <td>30</td>
+                        <td>82</td>
+                        <td>
+                            <div class="ratio-bar">
+                                <div class="hard-skills-fill" style="width: 63.4%"></div>
+                                <div class="soft-skills-fill" style="width: 36.6%"></div>
+                            </div>
+                            <div class="ratio-text">
+                                <span class="hard-percent">63.4%</span>
+                                <span class="soft-percent">36.6%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>6</td>
+                        <td>
+                            <div class="player-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Дмитриев&backgroundColor=6A5ACD" 
+                                     alt="Дмитриев" class="player-avatar">
+                                <span>Дмитриев Данил</span>
+                            </div>
+                        </td>
+                        <td>45</td>
+                        <td>25</td>
+                        <td>70</td>
+                        <td>
+                            <div class="ratio-bar">
+                                <div class="hard-skills-fill" style="width: 64.3%"></div>
+                                <div class="soft-skills-fill" style="width: 35.7%"></div>
+                            </div>
+                            <div class="ratio-text">
+                                <span class="hard-percent">64.3%</span>
+                                <span class="soft-percent">35.7%</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function search() {
+            var text = document.getElementById('search').value.toLowerCase();
+            const tr = document.querySelectorAll('tbody tr');
+            
+            tr.forEach(row => {
+                const playerName = row.querySelector('.player-info span').textContent.toLowerCase();
+                if (playerName.includes(text)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Автоматическая генерация аватаров для всех участников
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatars = document.querySelectorAll('.player-avatar, .user-avatar-small');
+            avatars.forEach(avatar => {
+                const seed = avatar.alt || 'user';
+                avatar.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seed)}&backgroundColor=6A5ACD`;
+            });
+
+            // Автоматический расчет процентного соотношения
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const hardSkills = parseInt(row.cells[2].textContent);
+                const softSkills = parseInt(row.cells[3].textContent);
+                const total = hardSkills + softSkills;
+                
+                if (total > 0) {
+                    const hardPercentage = (hardSkills / total) * 100;
+                    const softPercentage = (softSkills / total) * 100;
+                    
+                    // Обновляем полоску соотношения
+                    const ratioBar = row.querySelector('.ratio-bar');
+                    ratioBar.innerHTML = `
+                        <div class="hard-skills-fill" style="width: ${hardPercentage.toFixed(1)}%"></div>
+                        <div class="soft-skills-fill" style="width: ${softPercentage.toFixed(1)}%"></div>
+                    `;
+                    
+                    // Обновляем текст процентного соотношения
+                    const ratioText = row.querySelector('.ratio-text');
+                    ratioText.innerHTML = `
+                        <span class="hard-percent">${hardPercentage.toFixed(1)}%</span>
+                        <span class="soft-percent">${softPercentage.toFixed(1)}%</span>
+                    `;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

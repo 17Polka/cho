@@ -1,0 +1,925 @@
+﻿<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Расписание</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 30px 20px 20px 20px;
+        }
+
+
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 95%;
+        }
+
+
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            height: 80px;
+        }
+
+
+
+        .back-button {
+            background: #a067e8;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 4px 15px rgba(106, 90, 205, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+
+
+            .back-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(106, 90, 205, 0.4);
+                background: rgb(174, 111, 218);
+            }
+
+
+
+            .back-button::before {
+                content: "←";
+                font-size: 18px;
+            }
+
+
+
+        .title-container {
+            background: #a067e8;
+            border-radius: 12px;
+            padding: 20px 40px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(106, 90, 205, 0.3);
+            border: 2px solid #a067e8;
+            flex-grow: 1;
+            margin: 0 20px;
+            max-width: 400px;
+        }
+
+
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+
+
+        .schedule-container {
+            background: #f8f9ff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(106, 90, 205, 0.15);
+            border: 2px solid #e6ebff;
+            margin-top: 10px;
+        }
+
+
+
+        .schedule-header {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+
+
+        .day-column {
+            background: #a067e8;
+            color: white;
+            padding: 15px 10px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(106, 90, 205, 0.3);
+        }
+
+
+
+        .day-date {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+
+
+        .navigation-right {
+            position: absolute;
+            right: 0;
+            top: -70px;
+            display: flex;
+            gap: 10px;
+        }
+
+
+
+        .nav-button {
+            background: #a067e8;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 15px rgb(174, 111, 218);
+            transition: all 0.3s ease;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+
+            .nav-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgb(174, 111, 218);
+                background: rgb(174, 111, 218);
+            }
+
+
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+        }
+
+
+
+        .day-schedule {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            min-height: 400px;
+            box-shadow: 0 4px 15px rgba(106, 90, 205, 0.1);
+            border: 2px solid #e6ebff;
+        }
+
+
+
+        .lesson {
+            background: #6A5ACD;
+            color: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 3px 10px rgba(106, 90, 205, 0.2);
+            transition: all 0.3s ease;
+        }
+
+
+
+            .lesson:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(106, 90, 205, 0.3);
+                background: #5D4EC0;
+            }
+
+
+
+        .lesson-time {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+
+
+        .lesson-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+
+
+        .lesson-room {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+
+
+        .empty-day {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6A5ACD;
+            font-style: italic;
+            height: 100%;
+            font-size: 16px;
+        }
+
+
+
+        /* Адаптивность */
+
+        @media (max-width: 1200px) {
+
+            .container {
+                width: 98%;
+            }
+
+
+
+            .schedule-header,
+            .schedule-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+
+
+            .title {
+                font-size: 36px;
+            }
+
+
+
+            .title-container {
+                padding: 15px 30px;
+                max-width: 350px;
+            }
+        }
+
+
+
+        @media (max-width: 768px) {
+
+            body {
+                padding: 25px 15px 15px 15px;
+            }
+
+
+
+            .header {
+                height: 70px;
+                margin-bottom: 25px;
+                flex-wrap: wrap;
+            }
+
+
+
+            .title {
+                font-size: 28px;
+            }
+
+
+
+            .title-container {
+                padding: 12px 25px;
+                margin: 10px 0;
+                order: 3;
+                width: 100%;
+                max-width: none;
+            }
+
+
+
+            .back-button {
+                padding: 10px 20px;
+                height: 45px;
+                font-size: 14px;
+            }
+
+
+
+            .nav-button {
+                padding: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+
+
+            .schedule-header,
+            .schedule-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+
+
+            .day-column {
+                font-size: 14px;
+                padding: 12px 8px;
+            }
+
+
+
+            .day-date {
+                font-size: 12px;
+            }
+
+
+
+            .navigation-right {
+                top: -60px;
+            }
+        }
+
+
+
+        @media (max-width: 480px) {
+
+            body {
+                padding: 20px 10px 10px 10px;
+            }
+
+
+
+            .header {
+                height: 60px;
+                margin-bottom: 20px;
+            }
+
+
+
+            .title {
+                font-size: 24px;
+            }
+
+
+
+            .title-container {
+                padding: 10px 20px;
+                border-radius: 10px;
+            }
+
+
+
+            .back-button {
+                padding: 8px 16px;
+                height: 40px;
+                font-size: 12px;
+            }
+
+
+
+            .nav-button {
+                padding: 8px;
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+
+
+
+            .schedule-header,
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+
+            .schedule-container {
+                padding: 15px;
+            }
+
+
+
+            .day-column {
+                font-size: 14px;
+            }
+
+
+
+            .day-schedule {
+                min-height: 200px;
+            }
+
+
+
+            .navigation-right {
+                position: static;
+                justify-content: center;
+                margin-bottom: 15px;
+                margin-top: 10px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+
+            <button class="back-button">Назад</button>
+
+            <div class="title-container">
+
+                <h1 class="title">Расписание</h1>
+
+            </div>
+
+            <div style="width: 100px;"></div> <!-- Пустой элемент для балансировки -->
+
+        </div>
+
+
+
+        <div class="schedule-container">
+
+            <div class="schedule-header">
+
+                <div class="day-column">
+
+                    Понедельник
+
+                    <div class="day-date" id="date-mon"></div>
+
+                </div>
+
+                <div class="day-column">
+
+                    Вторник
+
+                    <div class="day-date" id="date-tue"></div>
+
+                </div>
+
+                <div class="day-column">
+
+                    Среда
+
+                    <div class="day-date" id="date-wed"></div>
+
+                </div>
+
+                <div class="day-column">
+
+                    Четверг
+
+                    <div class="day-date" id="date-thu"></div>
+
+                </div>
+
+                <div class="day-column">
+
+                    Пятница
+
+                    <div class="day-date" id="date-fri"></div>
+
+                </div>
+
+                <div class="day-column">
+
+                    Суббота
+
+                    <div class="day-date" id="date-sat"></div>
+
+                </div>
+
+                <div class="navigation-right">
+
+                    <button class="nav-button" id="prevWeek">←</button>
+
+                    <button class="nav-button" id="nextWeek">→</button>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="schedule-grid" id="scheduleGrid">
+
+                <!-- Расписание будет заполнено через JavaScript -->
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        // Расширенные данные расписания на октябрь и ноябрь 2025 года
+
+        const scheduleData = {
+
+            '2025-10-20': [
+
+                { time: '8:00-9:30', name: '1 пара: Мат.анализ', room: 'Главный корпус' },
+
+                { time: '9:35-11:05', name: '2 пара: Алгебра и геометрия', room: 'Ауд. 301' },
+
+                { time: '11:35-13:05', name: '3 пара: Заслуженный обед', room: 'Столовая' }
+
+            ],
+
+            '2025-10-21': [
+
+                { time: '9:35-10:55', name: 'Дискретная математика', room: 'Лаб. 215' },
+
+                { time: '11:35-12:55', name: 'Программно-аппаратные комплексы', room: 'Комп. класс 105' }
+
+            ],
+
+            '2025-10-22': [
+
+                { time: '8:30-10:00', name: 'Математический анализ', room: 'Ауд. 402' },
+
+                { time: '10:15-11:45', name: 'Основы информационных технологий', room: 'Ауд. 301' }
+
+            ],
+
+            '2025-10-23': [
+
+                { time: '10:00-16:00', name: 'Медкомиссия :)', room: 'Больница' }
+
+            ],
+
+            '2025-10-24': [
+
+                { time: '9:00-10:30', name: 'Английский язык', room: 'Ауд. 304' },
+
+                { time: '11:00-12:30', name: 'Физкультура', room: 'Спортзал' }
+
+            ],
+
+            '2025-10-25': [
+
+                { time: '9:00-10:30', name: 'Пары МФТИ', room: 'Корпус МФТИ' },
+
+                { time: '11:00-12:30', name: 'Программирование на С...', room: 'Ауд. 215' },
+
+                { time: '14:00-15:30', name: 'Сколько плюсов на плюсах?..', room: 'Лаб. 401' }
+
+            ],
+
+            '2025-10-26': [
+
+                { time: '9:00-10:30', name: 'Алгебра и геометрия', room: 'Ауд. 301' },
+
+                { time: '11:00-12:30', name: 'Современно речевая культура', room: 'Ауд. 303' }
+
+            ],
+
+            '2025-10-27': [
+
+                { time: '10:00-11:30', name: 'Отдых!)', room: 'Дом' }
+
+            ],
+
+            '2025-10-28': [
+
+                { time: '8:00-9:30', name: 'Мат.анализ', room: 'Ауд. 301' },
+
+                { time: '9:35-11:05', name: 'Алгебра и геометрия', room: 'Ауд. 302' },
+
+                { time: '11:35-13:05', name: 'Планирование карьеры', room: 'Ауд. 215' }
+
+            ],
+
+            '2025-10-29': [
+
+                { time: '9:00-10:30', name: 'Программирование на языке С', room: 'Комп. класс 105' },
+
+                { time: '11:00-12:30', name: 'ОРГ', room: 'Комп. класс 107' }
+
+            ],
+
+            '2025-10-30': [
+
+                { time: '8:30-10:00', name: 'Мат.анализ', room: 'Ауд. 301' },
+
+                { time: '10:15-11:45', name: 'Семинар по алгебре', room: 'Ауд. 303' }
+
+            ],
+
+            '2025-10-31': [
+
+                { time: '9:00-10:30', name: 'Яблочный спас', room: 'Отдых' }
+
+            ],
+
+
+
+            // Ноябрь 2025
+
+            '2025-11-01': [
+
+                { time: '9:00-10:30', name: 'Физческая культура', room: 'Ауд. 215' },
+
+                { time: '11:00-12:30', name: 'Лаб. работа по физике', room: 'Лаб. 216' }
+
+            ],
+
+            '2025-11-02': [
+
+                { time: '8:00-9:30', name: 'Мат.анализ', room: 'Ауд. 301' },
+
+                { time: '9:35-11:05', name: 'Алгебра', room: 'Ауд. 302' },
+
+                { time: '11:35-13:05', name: 'Программирование', room: 'Комп. класс 105' }
+
+            ],
+
+            '2025-11-03': [
+
+                { time: '10:00-11:30', name: 'Воскресенье', room: 'Выходной' }
+
+            ],
+
+            '2025-11-04': [
+
+                { time: '9:00-10:30', name: 'Алгебра и геометрия', room: 'Ауд. 401' },
+
+                { time: '11:00-12:30', name: 'МФТИ', room: 'Ауд. 402' },
+
+                { time: '14:00-15:30', name: 'Семинар по мат.анализу', room: 'Ауд. 303' }
+
+            ],
+
+            '2025-11-05': [
+
+                { time: '8:30-10:00', name: 'Иняз', room: 'Ауд. 215' },
+
+                { time: '10:15-11:45', name: 'Семинар по современно речевой культуре', room: 'Лаб. 401' }
+
+            ],
+
+            '2025-11-06': [
+
+                { time: '9:00-10:30', name: 'Программирование на С', room: 'Комп. класс 105' },
+
+                { time: '11:00-12:30', name: 'Алгебра и геометрия', room: 'Комп. класс 107' }
+
+            ],
+
+            '2025-11-07': [
+
+                { time: '9:00-10:30', name: 'Мат.анализ семинар', room: 'Ауд. 301' },
+
+                { time: '11:00-12:30', name: 'Мат.анализ', room: 'Ауд. 302' }
+
+            ],
+
+            '2025-11-08': [
+
+                { time: '8:00-9:30', name: 'Физкультура', room: 'Спортзал' },
+
+                { time: '10:00-11:30', name: 'Английский язык', room: 'Ауд. 304' }
+
+            ],
+
+            '2025-11-09': [
+
+                { time: '9:00-10:30', name: 'МфТИ', room: 'Учеба' },
+
+                { time: '11:00-12:30', name: 'МФТИ', room: 'Ауд. 201' }
+
+            ]
+
+
+
+        };
+
+
+
+        let currentWeekOffset = 0;
+
+
+
+        function getWeekDates(weekOffset) {
+
+            const now = new Date();
+
+            const currentDay = now.getDay();
+
+            const currentDate = now.getDate();
+
+
+
+            // Находим понедельник текущей недели
+
+            const monday = new Date(now);
+
+            monday.setDate(currentDate - currentDay + (currentDay === 0 ? -6 : 1));
+
+            monday.setDate(monday.getDate() + weekOffset * 7);
+
+
+
+            const weekDates = [];
+
+            for (let i = 0; i < 6; i++) {
+
+                const date = new Date(monday);
+
+                date.setDate(monday.getDate() + i);
+
+                weekDates.push(date);
+
+            }
+
+
+
+            return weekDates;
+
+        }
+
+
+
+        function formatDateForKey(date) {
+
+            const year = date.getFullYear();
+
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+
+            const day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+
+        }
+
+
+
+        function formatDayDate(date) {
+
+            const day = date.getDate();
+
+            const month = date.getMonth() + 1;
+
+            return `${day}.${month}`;
+
+        }
+
+
+
+        function renderSchedule() {
+
+            const dates = getWeekDates(currentWeekOffset);
+
+            const scheduleGrid = document.getElementById('scheduleGrid');
+
+
+
+            // Обновляем даты для дней недели
+
+            document.getElementById('date-mon').textContent = formatDayDate(dates[0]);
+
+            document.getElementById('date-tue').textContent = formatDayDate(dates[1]);
+
+            document.getElementById('date-wed').textContent = formatDayDate(dates[2]);
+
+            document.getElementById('date-thu').textContent = formatDayDate(dates[3]);
+
+            document.getElementById('date-fri').textContent = formatDayDate(dates[4]);
+
+            document.getElementById('date-sat').textContent = formatDayDate(dates[5]);
+
+
+
+            scheduleGrid.innerHTML = '';
+
+
+
+            dates.forEach(date => {
+
+                const dateStr = formatDateForKey(date);
+
+                const daySchedule = scheduleData[dateStr] || [];
+
+
+
+                const dayElement = document.createElement('div');
+
+                dayElement.className = 'day-schedule';
+
+
+
+                if (daySchedule.length === 0) {
+
+                    dayElement.innerHTML = '<div class="empty-day">Нет занятий</div>';
+
+                } else {
+
+                    daySchedule.forEach(lesson => {
+
+                        const lessonElement = document.createElement('div');
+
+                        lessonElement.className = 'lesson';
+
+                        lessonElement.innerHTML = `
+
+                                <div class="lesson-time">${lesson.time}</div>
+
+                                <div class="lesson-name">${lesson.name}</div>
+
+                                <div class="lesson-room">${lesson.room}</div>
+
+                            `;
+
+                        dayElement.appendChild(lessonElement);
+
+                    });
+
+                }
+
+
+
+                scheduleGrid.appendChild(dayElement);
+
+            });
+
+        }
+
+
+
+        // Обработчики событий
+
+        document.getElementById('prevWeek').addEventListener('click', () => {
+
+            currentWeekOffset--;
+
+            renderSchedule();
+
+        });
+
+
+
+        document.getElementById('nextWeek').addEventListener('click', () => {
+
+            currentWeekOffset++;
+
+            renderSchedule();
+
+        });
+
+
+
+        document.querySelector('.back-button').addEventListener('click', () => {
+
+            alert('Возврат на предыдущую страницу');
+
+            // window.history.back(); // Раскомментируйте для реального использования
+
+        });
+
+
+
+        // Инициализация
+
+        renderSchedule();
+
+    </script>
+
+</body>
+
+</html>
