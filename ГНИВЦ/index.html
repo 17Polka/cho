@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Система авторизации</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="mobile-header">
+        <div class="mobile-logo">
+            <i class="fas fa-user-shield"></i>
+            <span>ГосСистема</span>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <div class="mobile-logo">
+                <i class="fas fa-user-shield"></i>
+                <span>ГосСистема</span>
+            </div>
+            <button class="mobile-menu-close" id="mobileMenuClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-items">
+            <a href="#" class="mobile-menu-item" data-section="user-auth">
+                <i class="fas fa-user"></i>
+                <span>Вход для пользователей</span>
+            </a>
+            <a href="#" class="mobile-menu-item" data-section="admin-auth">
+                <i class="fas fa-user-tie"></i>
+                <span>Вход для администраторов</span>
+            </a>
+            <a href="#" class="mobile-menu-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Помощь</span>
+            </a>
+            <a href="#" class="mobile-menu-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>Безопасность</span>
+            </a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="auth-wrapper">
+            <!-- Выбор типа входа -->
+            <div class="auth-type-selector" id="authTypeSelector">
+                <h1 class="main-title">Выберите тип входа</h1>
+                <div class="auth-type-cards">
+                    <div class="auth-type-card active" data-type="user">
+                        <div class="card-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Вход для пользователей</h3>
+                        <p>Авторизация через ФИО и СНИЛС с подтверждением через Госуслуги</p>
+                        <button class="btn-select-type" data-type="user">Выбрать</button>
+                    </div>
+                    
+                    <div class="auth-type-card" data-type="admin">
+                        <div class="card-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3>Вход для администраторов</h3>
+                        <p>Авторизация по логину и паролю для сотрудников системы</p>
+                        <button class="btn-select-type" data-type="admin">Выбрать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Авторизация пользователя -->
+            <div class="user-auth-section" id="userAuthSection" style="display: none;">
+                <div class="logo-section">
+                    <div class="logo">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Авторизация пользователя</span>
+                    </div>
+                    <h1>Вход через ФИО и СНИЛС</h1>
+                    <p class="subtitle">Для доступа к системе введите ваши данные и подтвердите через портал Госуслуги</p>
+                    <button class="btn-back-to-select" id="userBackToSelect">
+                        <i class="fas fa-arrow-left"></i> Назад к выбору типа входа
+                    </button>
+                </div>
+
+                <div class="progress-steps">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Ввод ФИО и СНИЛС</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Подтверждение через Госуслуги</div>
+                    </div>
+                </div>
+                
+                <div class="mobile-progress-bar">
+                    <div class="mobile-progress-fill" id="userMobileProgressFill"></div>
+                </div>
+
+                <div class="auth-forms">
+                    <!-- Форма ввода ФИО и СНИЛС -->
+                    <form id="personalDataForm" class="form-step active">
+                        <h2>Введите персональные данные</h2>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Фамилия</label>
+                            <input type="text" id="lastName" placeholder="Иванов" required>
+                            <div class="error-message" id="lastNameError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="firstName">Имя</label>
+                            <input type="text" id="firstName" placeholder="Иван" required>
+                            <div class="error-message" id="firstNameError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="middleName">Отчество</label>
+                            <input type="text" id="middleName" placeholder="Иванович">
+                            <div class="error-message" id="middleNameError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="snils">СНИЛС</label>
+                            <input type="text" id="snils" placeholder="XXX-XXX-XXX YY" required data-mask="snils">
+                            <div class="hint">Формат: XXX-XXX-XXX YY (где YY - контрольное число)</div>
+                            <div class="error-message" id="snilsError"></div>
+                        </div>
+                        
+                        <div class="mobile-form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Все поля, кроме отчества, обязательны для заполнения</span>
+                        </div>
+                        
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="consent" required>
+                            <label for="consent">Даю согласие на обработку персональных данных</label>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <span class="btn-text">Продолжить</span>
+                            <i class="fas fa-arrow-right btn-icon"></i>
+                        </button>
+                    </form>
+
+                    <!-- Форма подтверждения через Госуслуги -->
+                    <form id="gosuslugiForm" class="form-step">
+                        <h2>Подтверждение через Госуслуги</h2>
+                        
+                        <div class="gosuslugi-info">
+                            <div class="gosuslugi-logo">
+                                <i class="fas fa-passport"></i>
+                                <span>Госуслуги</span>
+                            </div>
+                            <p>Для подтверждения вашей личности необходимо войти через портал Госуслуги. Вы будете перенаправлены на официальную страницу авторизации.</p>
+                            
+                            <div class="user-data-summary">
+                                <h3><i class="fas fa-user-check"></i> Данные для подтверждения:</h3>
+                                <div class="data-row">
+                                    <span class="data-label">ФИО:</span>
+                                    <span class="data-value" id="confirmFullName"></span>
+                                </div>
+                                <div class="data-row">
+                                    <span class="data-label">СНИЛС:</span>
+                                    <span class="data-value" id="confirmSnils"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="gosuslugiConsent" required>
+                            <label for="gosuslugiConsent">Согласен на передачу данных для подтверждения через Госуслуги</label>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button type="button" class="btn-secondary" id="userBackButton">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Назад</span>
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-external-link-alt"></i>
+                                <span>Перейти к авторизации</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Успешная авторизация пользователя -->
+                    <div id="userSuccessStep" class="form-step success-step">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2>Авторизация успешно завершена!</h2>
+                        <p>Ваша личность успешно подтверждена через портал Госуслуги.</p>
+                        <div class="success-data">
+                            <p><strong>Добро пожаловать, <span id="welcomeName"></span>!</strong></p>
+                            <p>Теперь вы можете пользоваться всеми возможностями системы.</p>
+                        </div>
+                        
+                        <div class="success-actions">
+                            <button type="button" class="btn-success-action" id="userPersonalAccountBtn">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Перейти в личный кабинет</span>
+                            </button>
+                            <button type="button" class="btn-success-action" id="userProfileSettingsBtn">
+                                <i class="fas fa-cog"></i>
+                                <span>Настройки профиля</span>
+                            </button>
+                        </div>
+                        
+                        <button type="button" class="btn-logout" id="userLogoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Выйти</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Авторизация администратора -->
+            <div class="admin-auth-section" id="adminAuthSection" style="display: none;">
+                <div class="logo-section">
+                    <div class="logo">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Авторизация администратора</span>
+                    </div>
+                    <h1>Вход для администраторов</h1>
+                    <p class="subtitle">Для доступа к административной панели введите ваши учетные данные</p>
+                    <button class="btn-back-to-select" id="adminBackToSelect">
+                        <i class="fas fa-arrow-left"></i> Назад к выбору типа входа
+                    </button>
+                </div>
+
+                <div class="auth-forms">
+                    <!-- Форма входа администратора -->
+                    <form id="adminLoginForm" class="admin-form">
+                        <h2>Введите учетные данные</h2>
+                        
+                        <div class="admin-login-info">
+                            <div class="admin-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <p>Для доступа к административной панели требуется авторизация по логину и паролю.</p>
+                            
+                            <div class="demo-credentials">
+                                <h4><i class="fas fa-key"></i> Тестовые учетные данные:</h4>
+                                <div class="credential-item">
+                                    <span class="cred-label">Логин:</span>
+                                    <span class="cred-value">admin</span>
+                                </div>
+                                <div class="credential-item">
+                                    <span class="cred-label">Пароль:</span>
+                                    <span class="cred-value">admin123</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="adminLogin"><i class="fas fa-user"></i> Логин</label>
+                            <input type="text" id="adminLogin" placeholder="Введите логин" required>
+                            <div class="error-message" id="adminLoginError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="adminPassword"><i class="fas fa-key"></i> Пароль</label>
+                            <input type="password" id="adminPassword" placeholder="Введите пароль" required>
+                            <div class="error-message" id="adminPasswordError"></div>
+                        </div>
+                        
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="rememberMe">
+                            <label for="rememberMe">Запомнить меня</label>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary btn-admin">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Войти</span>
+                        </button>
+                    </form>
+
+                    <!-- Успешная авторизация администратора -->
+                    <div id="adminSuccessStep" class="admin-success-step" style="display: none;">
+                        <div class="success-icon admin-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h2>Доступ предоставлен</h2>
+                        <p>Вы успешно вошли в административную панель.</p>
+                        <div class="success-data admin-data">
+                            <p><strong>Добро пожаловать, администратор!</strong></p>
+                            <p>Роль: <span class="admin-role" id="adminRole">Супер администратор</span></p>
+                            <p>Последний вход: <span id="lastLoginTime">сегодня в 10:30</span></p>
+                        </div>
+                        
+                        <div class="admin-controls">
+                            <h3><i class="fas fa-cogs"></i> Панель управления</h3>
+                            <div class="admin-control-buttons">
+                                <button class="admin-control-btn" id="adminDashboardBtn">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span>Дашборд</span>
+                                </button>
+                                <button class="admin-control-btn" id="adminUsersBtn">
+                                    <i class="fas fa-users"></i>
+                                    <span>Пользователи</span>
+                                </button>
+                                <button class="admin-control-btn" id="adminSettingsBtn">
+                                    <i class="fas fa-sliders-h"></i>
+                                    <span>Настройки</span>
+                                </button>
+                                <button class="admin-control-btn" id="adminLogsBtn">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <span>Логи</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn-logout" id="adminLogoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Выйти</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <div class="footer-section">
+                    <p><i class="fas fa-shield-alt"></i> Все данные защищены и передаются по безопасному соединению</p>
+                </div>
+                <div class="footer-section">
+                    <p><i class="fas fa-phone-alt"></i> Техническая поддержка: <a href="tel:+78001234567">8-800-123-45-67</a></p>
+                    <p><i class="fas fa-clock"></i> Круглосуточная поддержка</p>
+                </div>
+                <div class="footer-section version-info">
+                    <p>Версия системы: 2.1.4</p>
+                    <p>© 2024 Государственная система авторизации</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mobile-bottom-nav">
+        <a href="#" class="nav-item" data-section="user-auth">
+            <i class="fas fa-user"></i>
+            <span>Пользователь</span>
+        </a>
+        <a href="#" class="nav-item" data-section="admin-auth">
+            <i class="fas fa-user-tie"></i>
+            <span>Администратор</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Помощь</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-phone"></i>
+            <span>Поддержка</span>
+        </a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
